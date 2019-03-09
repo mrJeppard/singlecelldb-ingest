@@ -1,5 +1,5 @@
 # clusterdb-ingest
-Scripts to ingest data into the Stuart lab's Single Cell Database.
+Scripts to ingest data into the Stuart lab's cluster database.
 
 To run any of the scripts, make a virtual environment with python3.6
 
