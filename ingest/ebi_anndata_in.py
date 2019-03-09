@@ -1,7 +1,9 @@
 """
 Works with a directory of anndata objects which are the result of anndataize_ebi.py
 
-To run change the DATADIR global and
+To run change the DATADIR and FULLPATHDB global run and run the script from the repos venv.
+
+python ebi_anndata_in.py
 """
 import os
 import scanpy as sc
