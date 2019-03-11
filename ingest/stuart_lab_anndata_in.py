@@ -15,15 +15,13 @@ import pandas as pd
 from sqlalchemy import create_engine, Table, MetaData, select
 
 # Full path to the sqllite db
-#FULLDBPATH = "/home/duncan/work/singlecelldb-ingest"
 FULLDBPATH = "/Users/swat/dev/cdb/cluster.db"
-# Path to the data directory filled with ebi anndata objects.
+# Path to the data directory filled with anndata objects.
 DATADIR = "/Users/swat/dev/cdbIngest/dataIn"
 
 # Connection to the database.
 dbstartstr = "sqlite:///%s" % FULLDBPATH
 engine = create_engine(dbstartstr, echo=False)
-#engine = create_engine(dbstartstr, echo=True)
 metadata = MetaData()
 conn = engine.connect()
 
