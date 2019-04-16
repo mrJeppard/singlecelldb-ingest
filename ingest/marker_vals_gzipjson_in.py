@@ -146,11 +146,15 @@ def query_clusterid(cluster_solution_id, cluster_name, session):
 	).one()[0]
 
 
+quer = session.query(Marker).filter(Marker.cluster_solution_id ==300)
+quer = session.query(Marker).filter(Marker.cluster_id ==500)
+quer.count()
+
 def main():
 
 	dbpath, in_file = parse_args()
 	# Full path to the sqllite db
-	# dbpath = "/home/duncan/work/ebiscanpy-clusterdb/cluster.db.ebi.filled"
+	# dbpath = "/home/duncan/work/cdb/clusterDb/cluster.db"
 
 	# Connection to the database.
 	dbstartstr = "sqlite:///%s" % dbpath
@@ -158,6 +162,7 @@ def main():
 	Base.metadata.create_all(engine)
 	Session = sessionmaker(bind=engine)
 	session = Session()
+
 
 	with gzip.GzipFile(in_file, 'r') as fin:
 		data = json.loads(fin.read().decode('utf-8'))
