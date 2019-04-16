@@ -26,6 +26,7 @@ A single scanpy object is built from the data_ingest_pipeline. That anndata obje
 .uns["ebi_view_data_url"] = str
 .uns["short_description"] = str
 
+TODO: make sure that the cluster names get put in as a category.
 """
 
 from io import BytesIO
