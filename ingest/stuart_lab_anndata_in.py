@@ -9,7 +9,7 @@ To run change the DATADIR and FULLPATHDB global run and run the script from the 
 
 python stuart_lab_anndata_in.py
 """
-import os
+import os, csv
 import scanpy as sc
 import pandas as pd
 from sqlalchemy import create_engine, Table, MetaData, select
@@ -18,6 +18,8 @@ from sqlalchemy import create_engine, Table, MetaData, select
 FULLDBPATH = "/Users/swat/dev/cdb/cluster.db"
 # Path to the data directory filled with anndata objects.
 DATADIR = "/Users/swat/dev/cdbIngest/dataIn"
+# Path to the dataset tsv file.
+DATASETPATH = "/Users/swat/dev/cdbIngest/dataIn/dataset.tsv"
 
 # Connection to the database.
 dbstartstr = "sqlite:///%s" % FULLDBPATH
@@ -58,13 +60,36 @@ def method_parameters():
 def analyst():
     return "Verena Friedl"
 
+# Upsert datasets from the tsv file.
+with open(DATASETPATH, 'rU') as fin:
+    fin = csv.DictReader(fin, delimiter='\t')
+    for row in fin:
+        dataset_insert = dataset.insert().values(
+            name=row['name'],
+            uuid=row['uuid'],
+            species=row['species'],
+            organ=row['organ'],
+            cell_count=row['cell_count'],
+            disease=row['disease'],
+            platform=row['platform'],
+            description=row['description'],
+            data_source_url=row['data_source_url'],
+            authorized=row['authorized']
+        )
+        result = conn.execute(dataset_insert)
+        dataset_key = result.inserted_primary_key
+        print('dataset_key:', dataset_key)
 
 # Read each anndata object.
 for filename in os.listdir(DATADIR):
     print(filename)
-    ad = sc.read(os.path.join(DATADIR,filename))
+    
+    # Skip two cluster solutions already there.
+    if filename == '10xGenomics_pbmc8k' \
+        or filename == '10xGenomics_t_3k_4k_aggregate':
+        continue
 
-    # Note that datasets were loaded via swagger update APIs.
+    ad = sc.read(os.path.join(DATADIR,filename))
 
     # Find the dataset_id
     dataset_name = filename.split("_clustered")[0]
@@ -113,3 +138,4 @@ for filename in os.listdir(DATADIR):
         cells = [dict(name=n, cluster_id=cluster_key[0]) for n in cell_ids]
         #print(cells)
         conn.execute(cell_of_cluster.insert(), cells)
+

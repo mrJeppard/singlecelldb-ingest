@@ -18,4 +18,5 @@ def add_column(database_name, table_name="cluster", column_name="cell_count", da
   connection.commit()
   connection.close()
 
+#add_column("/home/duncan/work/clusterdb-ingest/cluster.db.ebi.filled", "cluster", "cell_count", "Integer")add_column("/Users/swat/dev/cdbIngest/cluster.db", "dataset", "authorized", "String")
 #add_column("/home/duncan/work/clusterdb-ingest/cluster.db.ebi.filled", "cluster", "cell_count", "Integer")
