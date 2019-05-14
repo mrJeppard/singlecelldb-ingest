@@ -1,9 +1,10 @@
 
 import sqlite3
 import pprint
-from sqlalchemy import create_engine, inspect, MetaData, select, Table
+from sqlalchemy import create_engine, inspect, MetaData, select, Table, update
 
-def show(database_path, table_name="dataset", column="publication_url"):
+def populate_column(database_path, table_name="dataset"):
+
     # Connection to the database.
     dbstartstr = "sqlite:///%s" % database_path
     engine = create_engine(dbstartstr, echo=False)
@@ -12,12 +13,14 @@ def show(database_path, table_name="dataset", column="publication_url"):
     meta = MetaData(engine,reflect=True)
     table = meta.tables[table_name]
 
-    select_st = select([
-        table.c.publication_url]).where(
-        table.c.publication_url != None)
+    # update the column in every row.
+    query = update(table).values(role='public')
+    res = conn.execute(query)
+    
+    # verify update.
+    select_st = select([table.c.role])
     res = conn.execute(select_st)
     for _row in res:
         print(_row)
 
-
-show("/Users/swat/dev/cdbIngest/cluster.db", "dataset", "publication_url")
+populate_column('/Users/swat/dev/cdb/cluster.db')
